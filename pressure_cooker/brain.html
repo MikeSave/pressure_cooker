@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brainy – Connect the Brains!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ======================== GAME 3 – CONNECT THE BRAIN ======================== -->
+    <section id="screen-brain" class="screen">
+        <div class="bg-cover" id="brain-bg"></div>
+
+        <div class="game-header">
+            <button class="pill-btn" onclick="window.location.href='index.html'">← Home</button>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <button class="audio-btn" onclick="speakBrainInstruction()" title="Read aloud">🔊</button>
+                <div class="level-badge">Level <span id="brain-level">1</span> / 3</div>
+                <div class="score-badge">⭐ <span id="brain-score">0</span></div>
+            </div>
+        </div>
+
+        <div id="brain-instructions">
+            <span>Click a left brain 🧠, then click a right brain to connect them!</span>
+        </div>
+
+        <div id="brain-game-area">
+            <svg id="brain-svg"></svg>
+            <div class="brain-column" id="left-column"></div>
+            <div class="brain-column" id="right-column"></div>
+        </div>
+    </section>
+
+    <!-- ========================= SHARED MODAL ========================== -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <div class="modal-emoji" id="modal-emoji">🎉</div>
+            <h2 class="modal-title" id="modal-title">Amazing!</h2>
+            <p class="modal-sub" id="modal-sub"></p>
+            <p class="modal-score" id="modal-score"></p>
+            <div class="modal-actions">
+                <button class="modal-btn green" id="modal-play-again" onclick="modalPlayAgain()">Play Again</button>
+                <button class="modal-btn purple" onclick="closeModal(); window.location.href='index.html'">🏠
+                    Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level complete toast (brain game only) -->
+    <div id="level-toast">🎉 Level Complete!</div>
+
+    <script src="shared.js"></script>
+    <script src="brain.js"></script>
+
+</body>
+
+</html>

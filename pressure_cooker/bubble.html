@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brainy – Pop the Bubbles!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ======================== GAME 1 – POP THE BUBBLE ======================== -->
+    <section id="screen-bubble" class="screen">
+        <div class="bg-cover" id="bubble-bg"></div>
+
+        <div class="game-header">
+            <button class="pill-btn" onclick="window.location.href='index.html'">← Home</button>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <button class="audio-btn" id="bubble-audio-btn" onclick="speakBubble()" title="Read aloud">🔊</button>
+                <div class="score-badge">⭐ Score: <span id="bubble-score">0</span></div>
+            </div>
+        </div>
+
+        <div id="bubble-prompt">
+            <p>Find and pop the letters to spell:</p>
+            <div class="letter-slots" id="bubble-slots"></div>
+        </div>
+
+        <div id="bubble-area">
+            <img src="assets/brainy.png" id="brainy-bubble" alt="Brainy" />
+        </div>
+    </section>
+
+    <!-- ========================= SHARED MODAL ========================== -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <div class="modal-emoji" id="modal-emoji">🎉</div>
+            <h2 class="modal-title" id="modal-title">Amazing!</h2>
+            <p class="modal-sub" id="modal-sub"></p>
+            <p class="modal-score" id="modal-score"></p>
+            <div class="modal-actions">
+                <button class="modal-btn green" id="modal-play-again" onclick="modalPlayAgain()">Play Again</button>
+                <button class="modal-btn purple" onclick="closeModal(); window.location.href='index.html'">🏠
+                    Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="bubble.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brainy – Build Sentences!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ======================== GAME 2 – SENTENCE BUILDER ======================== -->
+    <section id="screen-sentence" class="screen">
+        <!-- Decorative circles -->
+        <div class="deco-circle" style="width:90px;height:90px;background:#fde68a;top:5%;left:2%;"></div>
+        <div class="deco-circle" style="width:60px;height:60px;background:#93c5fd;bottom:10%;right:3%;"></div>
+        <div class="deco-circle" style="width:50px;height:50px;background:#f9a8d4;top:40%;right:1%;"></div>
+
+        <div class="game-header">
+            <button class="pill-btn" onclick="window.location.href='index.html'">← Home</button>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <button class="audio-btn" onclick="speakSentence()" title="Read aloud">🔊</button>
+                <div class="score-badge" style="font-size:.95rem;">Q <span id="sent-qnum">1</span> / <span
+                        id="sent-qtotal">6</span></div>
+                <div class="score-badge">⭐ <span id="sent-score">0</span></div>
+            </div>
+        </div>
+
+        <div id="sentence-main">
+            <div class="blackboard-wrap">
+                <img src="assets/table.png" alt="Blackboard frame" />
+                <div class="blackboard-content">
+                    <div class="blackboard-inner">
+                        <div class="sentence-text" id="sent-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="word-choices" id="word-choices"></div>
+
+            <div class="sentence-feedback" id="sent-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ========================= SHARED MODAL ========================== -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <div class="modal-emoji" id="modal-emoji">🎉</div>
+            <h2 class="modal-title" id="modal-title">Amazing!</h2>
+            <p class="modal-sub" id="modal-sub"></p>
+            <p class="modal-score" id="modal-score"></p>
+            <div class="modal-actions">
+                <button class="modal-btn green" id="modal-play-again" onclick="modalPlayAgain()">Play Again</button>
+                <button class="modal-btn purple" onclick="closeModal(); window.location.href='index.html'">🏠
+                    Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="sentence.js"></script>
+
+</body>
+
+</html>
