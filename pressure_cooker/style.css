@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/open-dyslexic');
+
 /* ====== RESET & BASE ====== */
 *,
 *::before,
@@ -14,7 +16,7 @@ body {
 }
 
 body {
-    font-family: 'Lexend', sans-serif;
+    font-family: 'Open Dyslexic', 'Lexend', sans-serif;
     background: #1a0533;
     color: #1a0533;
 }
