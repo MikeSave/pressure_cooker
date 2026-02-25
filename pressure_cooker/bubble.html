@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brainy – Pop the Bubbles!</title>
+    <title>Brainy – Anagram Swipe!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -13,25 +13,35 @@
 
 <body>
 
-    <!-- ======================== GAME 1 – POP THE BUBBLE ======================== -->
+    <!-- ======================== GAME 1 – ANAGRAM SWIPE ======================== -->
     <section id="screen-bubble" class="screen">
         <div class="bg-cover" id="bubble-bg"></div>
 
         <div class="game-header">
             <button class="pill-btn" onclick="window.location.href='index.html'">← Home</button>
             <div style="display:flex;gap:10px;align-items:center;">
-                <button class="audio-btn" id="bubble-audio-btn" onclick="speakBubble()" title="Read aloud">🔊</button>
+                <button class="audio-btn" onclick="speakBubble()" title="Read aloud">🔊</button>
                 <div class="score-badge">⭐ Score: <span id="bubble-score">0</span></div>
             </div>
         </div>
 
-        <div id="bubble-prompt">
-            <p>Find and pop the letters to spell:</p>
-            <div class="letter-slots" id="bubble-slots"></div>
-        </div>
+        <!-- Main game area -->
+        <div id="bubble-game">
 
-        <div id="bubble-area">
-            <img src="assets/brainy.png" id="brainy-bubble" alt="Brainy" />
+            <!-- Two word blank rows -->
+            <div id="bubble-words">
+                <!-- Filled by JS -->
+            </div>
+
+            <!-- Letter tiles in a ring -->
+            <div id="bubble-tiles-area">
+                <svg id="bubble-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+                <!-- Tiles added by JS -->
+            </div>
+
+            <!-- Feedback message -->
+            <div id="bubble-feedback"></div>
+
         </div>
     </section>
 
