@@ -722,6 +722,46 @@
             overflow: hidden;
         }
 
+        #completed-words {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .completed-word {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: popIn .4s ease both;
+        }
+
+        .completed-word img {
+            width: clamp(90px, 14vw, 140px);
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+            flex-shrink: 0;
+        }
+
+        .completed-word-text {
+            background: #fff;
+            border-radius: 20px;
+            padding: 6px 24px;
+            font-size: clamp(1.1rem, 3vw, 1.6rem);
+            font-weight: 900;
+            color: #6d28d9;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 4px solid #a855f7;
+            white-space: nowrap;
+        }
+
         #brain-svg {
             position: absolute;
             inset: 0;
@@ -768,12 +808,19 @@
         }
 
         .brain-half.selected {
-            transform: scale(1.12);
-            animation: pulse 1s ease-in-out infinite;
+            border: 4px solid #a855f7;
+            border-radius: 12px;
+            box-shadow: 0 0 16px rgba(168,85,247,0.4);
+        }
+
+        .brain-half.wrong {
+            animation: shake .6s ease;
+            border: 4px solid rgba(239, 68, 68, 0.9);
+            box-shadow: 0 8px 24px rgba(239,68,68,0.08);
         }
 
         .brain-half.connected {
-            opacity: .55;
+            display: none;
             cursor: default;
         }
 
@@ -785,12 +832,12 @@
             filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
             display: block;
             pointer-events: none;
-            top: var(--img-top, 20%);
+            top: var(--img-top, 0%);
             transform: translateY(var(--img-translate-y, -50%));
         }
 
         .brain-half.left-half img {
-            right: var(--left-img-offset, -20px);
+            right: var(--left-img-offset, -5px);
         }
 
         .brain-half.right-half img {
@@ -966,8 +1013,8 @@
         /* ====== LEVEL COMPLETE TOAST ====== */
         #level-toast {
             position: fixed;
-            bottom: 80px;
-            left: 50%;
+            bottom: 40px;
+            left: 75%;
             transform: translateX(-50%);
             background: #fff;
             border: 4px solid #4ade80;
@@ -1084,6 +1131,7 @@
         </div>
 
         <div id="brain-game-area">
+            <div id="completed-words"></div>
             <svg id="brain-svg" id="brain-svg"></svg>
             <div class="brain-column" id="left-column"></div>
             <div class="brain-column" id="right-column"></div>
@@ -1491,6 +1539,25 @@
             renderBrainLevel();
         }
 
+        function showCompletedWord(word) {
+            const container = document.getElementById('completed-words');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'completed-word';
+
+            const img = document.createElement('img');
+            img.src = 'assets/brainy-fu.png';
+            img.alt = 'Brainy';
+            wrapper.appendChild(img);
+
+            const textBox = document.createElement('div');
+            textBox.className = 'completed-word-text';
+            textBox.textContent = word;
+            wrapper.appendChild(textBox);
+
+            container.appendChild(wrapper);
+            // Words stay visible - they persist in the tower
+        }
+
         function renderBrainLevel() {
             const level = BRAIN_LEVELS[BRAIN_STATE.level];
             document.getElementById('brain-level').textContent = BRAIN_STATE.level + 1;
@@ -1499,6 +1566,9 @@
             BRAIN_STATE.selectedLeft = null;
             BRAIN_STATE.connections = [];
             BRAIN_STATE.levelDone = false;
+
+            // Clear completed words for new level
+            document.getElementById('completed-words').innerHTML = '';
 
             // Clear SVG lines
             const svg = document.getElementById('brain-svg');
@@ -1569,19 +1639,46 @@
                 const leftPairId = leftEl.dataset.pairId;
                 const correct = (leftPairId === pairId);
 
-                BRAIN_STATE.connections.push({ leftId: BRAIN_STATE.selectedLeft, rightId: el.id, correct });
                 if (correct) {
+                    // permanent connection
+                    BRAIN_STATE.connections.push({ leftId: BRAIN_STATE.selectedLeft, rightId: el.id, correct: true });
                     BRAIN_STATE.score += 20;
                     document.getElementById('brain-score').textContent = BRAIN_STATE.score;
+
+                    leftEl.classList.remove('selected');
+                    leftEl.classList.add('connected');
+                    el.classList.add('connected');
+                    BRAIN_STATE.selectedLeft = null;
+
+                    // Find and display the completed word in the tower
+                    const level = BRAIN_LEVELS[BRAIN_STATE.level];
+                    const pair = level.pairs.find(p => p.id === leftPairId);
+                    if (pair) {
+                        showCompletedWord(pair.word);
+                    }
+
+                    redrawLines();
+                    checkBrainLevelComplete();
+                } else {
+                    // wrong: give feedback and allow retry (do not mark connected)
+                    const instr = document.getElementById('brain-instructions');
+                    const span = instr ? instr.querySelector('span') : null;
+                    const prevText = span ? span.textContent : null;
+                    if (span) span.textContent = '❌ Try again — connect to the correct right brain!';
+
+                    // briefly highlight the wrong target and draw a temporary red line
+                    el.classList.add('wrong');
+                    const svg = document.getElementById('brain-svg');
+                    drawLine(svg, leftEl, el, '#ef4444');
+
+                    setTimeout(() => {
+                        el.classList.remove('wrong');
+                        if (span) span.textContent = prevText;
+                        // redraw permanent lines (clears temporary)
+                        redrawLines();
+                    }, 900);
+                    // keep leftEl selected so user can pick another right
                 }
-
-                leftEl.classList.remove('selected');
-                leftEl.classList.add('connected');
-                el.classList.add('connected');
-                BRAIN_STATE.selectedLeft = null;
-
-                redrawLines();
-                checkBrainLevelComplete();
             }
         }
 
@@ -1590,10 +1687,13 @@
             svg.innerHTML = '';
 
             BRAIN_STATE.connections.forEach(conn => {
-                const lEl = document.getElementById(conn.leftId);
-                const rEl = document.getElementById(conn.rightId);
-                if (!lEl || !rEl) return;
-                drawLine(svg, lEl, rEl, conn.correct ? '#10b981' : '#ef4444');
+                // Only draw lines for incorrect connections; correct ones disappear with the brains
+                if (!conn.correct) {
+                    const lEl = document.getElementById(conn.leftId);
+                    const rEl = document.getElementById(conn.rightId);
+                    if (!lEl || !rEl) return;
+                    drawLine(svg, lEl, rEl, '#ef4444');
+                }
             });
         }
 
@@ -1601,23 +1701,95 @@
             const svgRect = svg.getBoundingClientRect();
             const fromRect = fromEl.getBoundingClientRect();
             const toRect = toEl.getBoundingClientRect();
-            const x1 = fromRect.right - svgRect.left;
-            const y1 = fromRect.top + fromRect.height / 2 - svgRect.top;
-            const x2 = toRect.left - svgRect.left;
-            const y2 = toRect.top + toRect.height / 2 - svgRect.top;
-            const mx = (x1 + x2) / 2, my = Math.min(y1, y2) - 40;
+            // Prefer the visible label centers (if present) so lines connect to the
+            // visible syllable boxes. Fall back to element centers otherwise.
+            const fromLabel = fromEl.querySelector('.syllable-label');
+            const toLabel = toEl.querySelector('.syllable-label');
+            const fromBox = fromLabel ? fromLabel.getBoundingClientRect() : fromRect;
+            const toBox = toLabel ? toLabel.getBoundingClientRect() : toRect;
+
+            // convert screen-space box corners into SVG coordinates so sizes and
+            // positions are consistent with the SVG's coordinate system
+            const pt = svg.createSVGPoint();
+            const screenToSvg = svg.getScreenCTM().inverse();
+
+            function toSvgBox(box) {
+                const corners = [
+                    { x: box.left, y: box.top },
+                    { x: box.right, y: box.top },
+                    { x: box.right, y: box.bottom },
+                    { x: box.left, y: box.bottom }
+                ].map(c => {
+                    pt.x = c.x;
+                    pt.y = c.y;
+                    const p = pt.matrixTransform(screenToSvg);
+                    return { x: p.x, y: p.y };
+                });
+                const xs = corners.map(c => c.x);
+                const ys = corners.map(c => c.y);
+                const left = Math.min(...xs), right = Math.max(...xs);
+                const top = Math.min(...ys), bottom = Math.max(...ys);
+                return { left, right, top, bottom, width: right - left, height: bottom - top, cx: (left + right) / 2, cy: (top + bottom) / 2 };
+            }
+
+            const sFrom = toSvgBox(fromBox);
+            const sTo = toSvgBox(toBox);
+
+            // center points in SVG coords
+            const cx1 = sFrom.cx, cy1 = sFrom.cy;
+            const cx2 = sTo.cx, cy2 = sTo.cy;
+
+            // unit direction vector from start to end
+            const dx = cx2 - cx1, dy = cy2 - cy1;
+            const dist = Math.hypot(dx, dy) || 1;
+            const ux = dx / dist, uy = dy / dist;
+
+            // compute intersection of ray from center with rectangle edges
+            function rectEdgeIntersection(box, cx, cy, ux, uy) {
+                const candidates = [];
+                // left edge
+                if (ux !== 0) {
+                    const t = (box.left - cx) / ux;
+                    const y = cy + uy * t;
+                    if (t > 0 && y >= box.top - 0.0001 && y <= box.bottom + 0.0001) candidates.push({ t, x: box.left, y });
+                }
+                // right edge
+                if (ux !== 0) {
+                    const t = (box.right - cx) / ux;
+                    const y = cy + uy * t;
+                    if (t > 0 && y >= box.top - 0.0001 && y <= box.bottom + 0.0001) candidates.push({ t, x: box.right, y });
+                }
+                // top edge
+                if (uy !== 0) {
+                    const t = (box.top - cy) / uy;
+                    const x = cx + ux * t;
+                    if (t > 0 && x >= box.left - 0.0001 && x <= box.right + 0.0001) candidates.push({ t, x, y: box.top });
+                }
+                // bottom edge
+                if (uy !== 0) {
+                    const t = (box.bottom - cy) / uy;
+                    const x = cx + ux * t;
+                    if (t > 0 && x >= box.left - 0.0001 && x <= box.right + 0.0001) candidates.push({ t, x, y: box.bottom });
+                }
+                if (!candidates.length) return { x: cx, y: cy };
+                candidates.sort((a, b) => a.t - b.t);
+                return { x: candidates[0].x, y: candidates[0].y };
+            }
+
+            const pStart = rectEdgeIntersection(sFrom, cx1, cy1, ux, uy);
+            const pEnd = rectEdgeIntersection(sTo, cx2, cy2, -ux, -uy);
+
+            const x1 = pStart.x, y1 = pStart.y;
+            const x2 = pEnd.x, y2 = pEnd.y;
+
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            // draw a straight line instead of a curved quadratic to avoid gaps
             path.setAttribute('d', `M${x1},${y1} L ${x2},${y2}`);
             path.setAttribute('stroke', color);
             path.setAttribute('stroke-width', '6');
             path.setAttribute('fill', 'none');
-            path.setAttribute('stroke-linecap', 'round');
-            path.style.strokeDasharray = '300';
-            path.style.strokeDashoffset = '300';
-            path.style.transition = 'stroke-dashoffset .5s ease';
+            // use butt caps and no dash animation so the line displays instantly
+            path.setAttribute('stroke-linecap', 'butt');
             svg.appendChild(path);
-            requestAnimationFrame(() => { path.style.strokeDashoffset = '0'; });
         }
 
         function checkBrainLevelComplete() {
