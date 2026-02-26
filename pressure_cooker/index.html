@@ -724,9 +724,9 @@
 
         #completed-words {
             position: absolute;
-            top: 50%;
+            top: 40%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-60%, -50%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -743,7 +743,7 @@
         }
 
         .completed-word img {
-            width: clamp(90px, 14vw, 140px);
+            width: clamp(400px, 10vw, 100px);
             height: auto;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
@@ -1555,7 +1555,8 @@
             wrapper.appendChild(textBox);
 
             container.appendChild(wrapper);
-            // Words stay visible - they persist in the tower
+            // auto-remove after 2 seconds
+            setTimeout(() => wrapper.remove(), 2000);
         }
 
         function renderBrainLevel() {
