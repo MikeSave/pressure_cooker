@@ -58,3 +58,13 @@ function speak(text) {
     u.pitch = 1.1;
     window.speechSynthesis.speak(u);
 }
+
+function speakBrainInstruction() {
+    speak('Click a left brain, then click a right brain to connect them!');
+}
+
+function navigate(game) {
+    if (game === 'brain') {
+        window.location.href = 'brain.html';
+    }
+}
