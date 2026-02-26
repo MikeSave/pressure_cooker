@@ -6,8 +6,8 @@ const SENT_QUESTIONS = [
     { sentence: "I _____ a letter to my friend.", blankIdx: 1, correctWord: "write", wrongWord: "right" },
     { sentence: "Turn _____ at the corner.", blankIdx: 1, correctWord: "right", wrongWord: "write" },
     { sentence: "The _____ is shining today.", blankIdx: 1, correctWord: "sun", wrongWord: "son" },
-    { sentence: "I can _____ my dog.", blankIdx: 3, correctWord: "hear", wrongWord: "here" },
-    { sentence: "Put the book _____ the table.", blankIdx: 4, correctWord: "on", wrongWord: "won" },
+    { sentence: "I can  my dog.", blankIdx: 3, correctWord: "hear", wrongWord: "here" },
+    { sentence: "Put the book  the table.", blankIdx: 4, correctWord: "on", wrongWord: "won" },
 ];
 
 const SENT_STATE = { index: 0, score: 0, selected: null, done: false };
@@ -25,8 +25,10 @@ function renderSentence() {
     const q = SENT_QUESTIONS[SENT_STATE.index];
     document.getElementById('sent-qnum').textContent = SENT_STATE.index + 1;
     document.getElementById('sent-score').textContent = SENT_STATE.score;
-    document.getElementById('sent-feedback').textContent = '';
-    document.getElementById('sent-feedback').className = 'sentence-feedback';
+    const fbEl = document.getElementById('sent-feedback');
+    fbEl.textContent = '';
+    fbEl.className = 'sentence-feedback';
+    fbEl.style.display = 'none';
 
     // Build sentence display
     const words = q.sentence.split(' ');
@@ -37,7 +39,8 @@ function renderSentence() {
             const blank = document.createElement('span');
             blank.className = 'sentence-blank';
             blank.id = 'sent-blank';
-            blank.textContent = '';
+            // show dotted placeholder so players know where the word will go
+            blank.textContent = '.......';
             textEl.appendChild(blank);
         } else {
             const sp = document.createElement('span');
@@ -45,35 +48,51 @@ function renderSentence() {
             textEl.appendChild(sp);
         }
     });
+    // Create decorative brain images and interactive choice buttons above them
+    const overlay = document.getElementById('brain-overlay');
+    if (overlay) {
+        overlay.innerHTML = '';
 
-    // Shuffle word order
-    const flip = Math.random() > 0.5;
-    const w1 = flip ? q.correctWord : q.wrongWord;
-    const w2 = flip ? q.wrongWord : q.correctWord;
-    const isW1Correct = flip;
+        // decorative brains
+        const leftImg = document.createElement('img');
+        leftImg.src = 'assets/brain-left.png';
+        leftImg.alt = 'Left brain';
+        leftImg.className = 'brain-mask left';
 
-    const container = document.getElementById('word-choices');
-    container.innerHTML = '';
+        const rightImg = document.createElement('img');
+        rightImg.src = 'assets/brain-right.png';
+        rightImg.alt = 'Right brain';
+        rightImg.className = 'brain-mask right';
 
-    function makeChoice(word, isCorrect) {
-        const div = document.createElement('div');
-        div.className = 'brain-choice';
-        div.onclick = () => { if (!SENT_STATE.selected) checkSentence(word, isCorrect); };
+        overlay.appendChild(leftImg);
+        overlay.appendChild(rightImg);
 
-        const img = document.createElement('img');
-        img.src = 'assets/brainy-fu.png';
-        img.alt = 'Brainy character';
-        div.appendChild(img);
+        // build two choice buttons placed above each brain
+        const choiceRow = document.createElement('div');
+        choiceRow.className = 'choice-row';
 
-        const bubble = document.createElement('div');
-        bubble.className = 'word-bubble' + (isCorrect ? '' : ' pink');
-        bubble.textContent = word;
-        div.appendChild(bubble);
+        // determine order randomly (like before)
+        const flip = Math.random() > 0.5;
+        const leftWord = flip ? q.correctWord : q.wrongWord;
+        const rightWord = flip ? q.wrongWord : q.correctWord;
+        const leftIsCorrect = flip;
+        const rightIsCorrect = !flip;
 
-        container.appendChild(div);
+        function makeChoiceBtn(word, isCorrect) {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.textContent = word;
+            btn.onclick = () => { if (!SENT_STATE.selected) checkSentence(word, isCorrect); };
+            return btn;
+        }
+
+        const leftBtn = makeChoiceBtn(leftWord, leftIsCorrect);
+        const rightBtn = makeChoiceBtn(rightWord, rightIsCorrect);
+
+        choiceRow.appendChild(leftBtn);
+        choiceRow.appendChild(rightBtn);
+        overlay.appendChild(choiceRow);
     }
-    makeChoice(w1, isW1Correct);
-    makeChoice(w2, !isW1Correct);
 }
 
 function checkSentence(word, isCorrect) {
@@ -88,6 +107,7 @@ function checkSentence(word, isCorrect) {
         blank.className = 'sentence-blank correct';
         fb.textContent = '🎉 Correct! Great job!';
         fb.className = 'sentence-feedback correct-fb';
+        fb.style.display = 'block';
         SENT_STATE.score += 10;
         document.getElementById('sent-score').textContent = SENT_STATE.score;
 
@@ -106,11 +126,14 @@ function checkSentence(word, isCorrect) {
         blank.className = 'sentence-blank wrong';
         fb.textContent = '❌ Oops! Try again!';
         fb.className = 'sentence-feedback wrong-fb';
+        fb.style.display = 'block';
         setTimeout(() => {
-            blank.textContent = '';
+            // restore dotted placeholder after wrong attempt
+            blank.textContent = '.......';
             blank.className = 'sentence-blank';
             fb.textContent = '';
             fb.className = 'sentence-feedback';
+            fb.style.display = 'none';
             SENT_STATE.selected = null;
         }, 1000);
     }
