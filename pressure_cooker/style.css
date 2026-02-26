@@ -1,5 +1,10 @@
 @import url('https://fonts.cdnfonts.com/css/open-dyslexic');
 
+/* Apply OpenDyslexic globally */
+* {
+    font-family: 'Open-Dyslexic', sans-serif;
+}
+
 /* ====== RESET & BASE ====== */
 *,
 *::before,
@@ -16,7 +21,7 @@ body {
 }
 
 body {
-    font-family: 'Open Dyslexic', 'Lexend', sans-serif;
+    font-family: 'Open-Dyslexic', sans-serif;
     background: #1a0533;
     color: #1a0533;
 }
@@ -372,7 +377,7 @@ body {
 }
 
 #bubble-bg {
-    background-image: url('assets/brain-bg.png');
+    background-image: url('assets/Brain-big\ BUBLES\ 02.png');
 }
 
 /* Main game layout */
@@ -413,7 +418,7 @@ body {
 .word-row-label {
     font-size: 0.8rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgb(255, 255, 255);
     text-transform: uppercase;
     letter-spacing: 0.12em;
 }
@@ -549,10 +554,11 @@ body {
 /* Blackboard wrapper */
 .blackboard-wrap {
     width: 100%;
-    max-width: 1000px; /* increased so the table image appears larger */
+    max-width: 1000px;
+    /* increased so the table image appears larger */
     position: relative;
     flex-shrink: 0;
-    margin-top: -90px; 
+    margin-top: -90px;
 }
 
 .blackboard-wrap img {
@@ -581,7 +587,8 @@ body {
     /* place the inner content centered on top of the table image and make it lighter */
     position: absolute;
     left: 50%;
-    top: 40%; /* nudged up so the sentence text sits higher on the table */
+    top: 40%;
+    /* nudged up so the sentence text sits higher on the table */
     transform: translate(-50%, -50%);
 
     /* Make inner container invisible so only the sentence text sits on the table image */
@@ -595,7 +602,8 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0;
-    z-index: 60; /* ensure sentence text sits above decorative brains */
+    z-index: 60;
+    /* ensure sentence text sits above decorative brains */
 }
 
 .sentence-text {
@@ -614,7 +622,8 @@ body {
     display: inline;
     min-width: 0;
     height: auto;
-    border-bottom: none; /* no underline or box */
+    border-bottom: none;
+    /* no underline or box */
     text-align: center;
     line-height: normal;
     font-weight: 900;
@@ -647,8 +656,10 @@ body {
     transition: transform .2s;
     user-select: none;
 
-/* Hide original brain-choice area (we now use decorative overlay images) */
-.word-choices { display: none !important; }
+    /* Hide original brain-choice area (we now use decorative overlay images) */
+    .word-choices {
+        display: none !important;
+    }
 }
 
 .brain-choice:hover {
@@ -666,11 +677,13 @@ body {
     filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
     animation: floatY 2s ease-in-out infinite;
 }
+
 /* Overlay that contains the left/right brain images which cover the center board */
 .brain-overlay {
     position: absolute;
     inset: 0;
-    pointer-events: none; /* images decorative by default; buttons will be interactive */
+    pointer-events: none;
+    /* images decorative by default; buttons will be interactive */
     z-index: 40;
 }
 
@@ -683,7 +696,8 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 0 8%;
-    pointer-events: auto; /* allow clicks */
+    pointer-events: auto;
+    /* allow clicks */
     z-index: 45;
 }
 
@@ -695,12 +709,15 @@ body {
     font-size: clamp(1rem, 2.5vw, 1.4rem);
     color: #6d28d9;
     border: 4px solid #a855f7;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
     cursor: pointer;
     user-select: none;
     transition: transform .14s;
 }
-.choice-btn:hover { transform: translateY(-6px) scale(1.03); }
+
+.choice-btn:hover {
+    transform: translateY(-6px) scale(1.03);
+}
 
 /* Brain images */
 .brain-overlay img.brain-mask {
@@ -710,13 +727,20 @@ body {
     height: auto;
     object-fit: contain;
     opacity: 1;
-    filter: drop-shadow(0 16px 36px rgba(0,0,0,0.45));
+    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.45));
     pointer-events: none;
     z-index: 50;
 }
 
-.brain-overlay img.brain-mask.left  { left: 6%; transform: translateX(-6%); }
-.brain-overlay img.brain-mask.right { right: 6%; transform: translateX(6%); }
+.brain-overlay img.brain-mask.left {
+    left: 6%;
+    transform: translateX(-6%);
+}
+
+.brain-overlay img.brain-mask.right {
+    right: 6%;
+    transform: translateX(6%);
+}
 
 .brain-choice:nth-child(2) img {
     animation-delay: .5s;
@@ -757,7 +781,8 @@ body {
 }
 
 .sentence-feedback {
-    display: none; /* hide by default so nothing appears under the sentence */
+    display: none;
+    /* hide by default so nothing appears under the sentence */
     font-size: 1.4rem;
     font-weight: 700;
     text-align: center;
