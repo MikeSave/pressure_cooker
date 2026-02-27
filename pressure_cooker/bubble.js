@@ -238,6 +238,12 @@ function checkWord(word) {
         BUBBLE_STATE.score += 50;
         document.getElementById('bubble-score').textContent = BUBBLE_STATE.score;
 
+        // Pop the selected tiles with staggered delay
+        const tilesToPop = [...BUBBLE_STATE.selectedTiles];
+        tilesToPop.forEach((tileIdx, i) => {
+            setTimeout(() => popTile(tileIdx), i * 80);
+        });
+
         // Fill the corresponding blank row
         const rowIdx = pair.words.indexOf(word);
         fillWordRow(rowIdx, word);
@@ -247,10 +253,38 @@ function checkWord(word) {
             setTimeout(() => {
                 showModal('🎉', 'Amazing!', 'You found both words!', BUBBLE_STATE.score, () => initBubble());
             }, 900);
+        } else {
+            // Respawn tiles after pop animation finishes
+            setTimeout(() => renderTiles(), tilesToPop.length * 80 + 400);
         }
     } else {
         showBubbleFeedback('❌ Try again!', '#f87171');
     }
+}
+
+/* ── Pop a single tile ──────────────────────── */
+function popTile(tileIdx) {
+    const tile = document.getElementById(`tile-${tileIdx}`);
+    if (!tile) return;
+
+    const area = document.getElementById('bubble-tiles-area');
+    const pos = BUBBLE_STATE.tilePositions[tileIdx];
+
+    // Add popping class to the tile
+    tile.classList.add('popping');
+
+    // Create burst ring
+    const burst = document.createElement('div');
+    burst.className = 'pop-burst';
+    burst.style.left = pos.x + 'px';
+    burst.style.top = pos.y + 'px';
+    area.appendChild(burst);
+
+    // Clean up after animation
+    setTimeout(() => {
+        tile.remove();
+        burst.remove();
+    }, 500);
 }
 
 function fillWordRow(rowIdx, word) {

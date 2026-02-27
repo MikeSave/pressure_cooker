@@ -235,138 +235,204 @@ body {
     background-image: url('assets/startpage.png');
 }
 
-#home-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.08);
-}
-
 .home-content {
     position: relative;
     z-index: 10;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 24px;
+    padding: 24px 5% 24px 6%;
     width: 100%;
+    height: 100%;
     animation: fadeIn .8s ease both;
 }
 
-.home-title {
-    text-align: center;
-    margin-bottom: 40px;
-    animation: fadeSlideDown .8s ease both;
-}
-
-.home-title h1 {
-    font-size: clamp(3rem, 9vw, 6rem);
+/* ---- BRAINY title ---- */
+.home-title-text {
+    font-size: clamp(3.5rem, 10vw, 7rem);
     font-weight: 900;
-    background: linear-gradient(135deg, #7c3aed, #ec4899, #f97316);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+    color: #9b4d6e;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: clamp(16px, 3vh, 36px);
+    animation: fadeSlideDown .8s ease both;
+    align-self: flex-end;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    padding: 20px 50px;
 }
 
-.home-title p {
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
-    font-weight: 700;
-    color: #6d28d9;
-    margin-top: 10px;
+.home-title-text::before {
+    content: '';
+    position: absolute;
+    inset: -20px -40px;
+    background: radial-gradient(ellipse at center, rgba(255, 210, 220, 0.85) 60%, rgba(255, 210, 220, 0.5) 90%, transparent 95%);
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(10px);
 }
 
+/* Individual letter styling */
+.title-letter {
+    display: inline-block;
+    transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
+    cursor: default;
+}
+
+.title-letter:hover {
+    transform: scale(1.35);
+}
+
+/* Wave pop animation on load */
+@keyframes wavePop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.4);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.wave-pop {
+    animation: wavePop .35s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* ---- Button + Mascot row ---- */
+.home-layout {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1;
+    gap: 20px;
+}
+
+/* ---- Game card buttons ---- */
 .home-buttons {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    max-width: 480px;
+    gap: clamp(16px, 2.5vh, 28px);
+    max-width: 960px;
     animation: fadeSlideUp .7s .3s ease both;
 }
 
-.home-game-btn {
+.game-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px 85px;
+    border-radius: 22px;
+    border: 5px solid rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    cursor: pointer;
     width: 100%;
-    border: 4px solid rgba(255, 255, 255, 0.8);
-    border-radius: 999px;
-    padding: 18px 32px;
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: transform .22s cubic-bezier(.34, 1.56, .64, 1),
+        box-shadow .22s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    min-width: 373px;
+}
+
+.card-icon {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.card-label {
     font-family: inherit;
-    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
     font-weight: 900;
     color: #fff;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Blue card — Memory Match */
+.card-blue {
+    background: linear-gradient(135deg, #5efff7, #1ddfd5);
+    border-color: rgba(30, 80, 140, 0.5);
+}
+
+/* Orange card — Puzzle Quest */
+.card-orange {
+    background: linear-gradient(135deg, #f5b642, #e89620);
+    border-color: rgba(160, 90, 0, 0.4);
+}
+
+/* Green card — Quiz Master */
+.card-green {
+    background: linear-gradient(135deg, #801b6f, #6b105c);
+    border-color: rgba(84, 0, 80, 0.4);
+}
+
+/* Hover / active states */
+.game-card:hover {
+    box-shadow:
+        0 10px 36px rgba(0, 0, 0, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.game-card:active {
+    transition-duration: .08s;
+}
+
+/* ---- Mascot ---- */
+.home-mascot {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    animation: fadeIn 1s .4s ease both;
+}
+
+.home-mascot img {
+    width: clamp(160px, 28vw, 340px);
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.25));
     cursor: pointer;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-    transition: transform .18s, box-shadow .18s;
-    letter-spacing: .02em;
+    transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
 }
 
-.home-game-btn:hover {
-    transform: scale(1.06) rotate(-1deg);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+.home-mascot img:hover {
+    transform: scale(1.06) rotate(3deg);
 }
 
-.home-game-btn:active {
-    transform: scale(0.96);
+/* Mascot wave animation */
+@keyframes mascotWave {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-8deg);
+    }
+
+    50% {
+        transform: rotate(8deg);
+    }
+
+    75% {
+        transform: rotate(-5deg);
+    }
 }
 
-.btn-bubble {
-    background: linear-gradient(135deg, #22d3ee, #3b82f6);
-}
-
-.btn-sentence {
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-}
-
-.btn-brain {
-    background: linear-gradient(135deg, #fb923c, #eab308);
-}
-
-.home-tagline {
-    margin-top: 36px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #6d28d9;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 12px 28px;
-    border-radius: 999px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s .6s ease both;
-}
-
-/* Floating decorations */
-.float-deco {
-    position: absolute;
-    border-radius: 50%;
-    opacity: .65;
-    filter: blur(6px);
-    pointer-events: none;
-}
-
-.deco-yellow {
-    width: 64px;
-    height: 64px;
-    background: #fde68a;
-    top: 10%;
-    left: 5%;
-    animation: floatY 6s ease-in-out infinite;
-}
-
-.deco-cyan {
-    width: 80px;
-    height: 80px;
-    background: #67e8f9;
-    bottom: 12%;
-    right: 6%;
-    animation: floatY 5s 1s ease-in-out infinite;
-}
-
-.deco-purple {
-    width: 48px;
-    height: 48px;
-    background: #c084fc;
-    top: 35%;
-    right: 4%;
-    animation: floatX 7s ease-in-out infinite;
+.mascot-wave {
+    animation: mascotWave .6s ease !important;
 }
 
 /* ══════════════════════════════════════════════
@@ -520,7 +586,61 @@ body {
     color: #4c1d95;
 }
 
-/* Feedback text */
+/* Bubble pop animation */
+@keyframes bubblePop {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    30% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.8;
+    }
+
+    60% {
+        transform: translate(-50%, -50%) scale(1.8);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+.letter-tile.popping {
+    animation: bubblePop .35s ease-out forwards;
+    pointer-events: none;
+}
+
+/* Pop burst ring effect */
+.pop-burst {
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 4px solid rgba(147, 210, 255, 0.7);
+    transform: translate(-50%, -50%) scale(0.5);
+    animation: popBurstRing .45s ease-out forwards;
+    pointer-events: none;
+    z-index: 9;
+}
+
+@keyframes popBurstRing {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 1;
+        border-width: 4px;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 0;
+        border-width: 1px;
+    }
+}
+
 #bubble-feedback {
     font-size: 1.3rem;
     font-weight: 700;
@@ -926,13 +1046,13 @@ body {
 .brain-half.selected {
     border: 4px solid #a855f7;
     border-radius: 12px;
-    box-shadow: 0 0 16px rgba(168,85,247,0.4);
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
 }
 
 .brain-half.wrong {
     animation: shake .6s ease;
     border: 4px solid rgba(239, 68, 68, 0.9);
-    box-shadow: 0 8px 24px rgba(239,68,68,0.08);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.08);
 }
 
 .brain-half.connected {
@@ -1144,6 +1264,7 @@ body {
     display: none;
     animation: fadeSlideUp .35s ease both;
 }
+
 /* ══════════════════════════════════════════════
    SHARED – WIN / COMPLETE MODAL
 ══════════════════════════════════════════════ */

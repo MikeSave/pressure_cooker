@@ -14,30 +14,76 @@
     <!-- ======================== HOME / MENU SCREEN ======================== -->
     <section id="screen-home" class="screen">
         <div class="bg-cover" id="home-bg"></div>
-        <div id="home-overlay"></div>
-
-        <div class="float-deco deco-yellow"></div>
-        <div class="float-deco deco-cyan"></div>
-        <div class="float-deco deco-purple"></div>
 
         <div class="home-content">
-            <div class="home-title">
-                <h1>🧠 Brainy</h1>
-                <p>✨ Learning Made Fun! ✨</p>
-            </div>
+            <!-- Title -->
+            <h1 class="home-title-text">
+                <span class="title-letter">B</span><span class="title-letter">R</span><span
+                    class="title-letter">A</span><span class="title-letter">I</span><span
+                    class="title-letter">N</span><span class="title-letter">Y</span>
+            </h1>
 
+            <!-- Game buttons -->
             <div class="home-buttons">
-                <button class="home-game-btn btn-bubble" onclick="window.location.href='bubble.html'">🫧 Pop the
-                    Bubbles!</button>
-                <button class="home-game-btn btn-sentence" onclick="window.location.href='sentence.html'">📝 Build
-                    Sentences!</button>
-                <button class="home-game-btn btn-brain" onclick="window.location.href='brain.html'">🧠 Connect the
-                    Brains!</button>
+                <a href="bubble.html" class="game-card card-blue" id="btn-memory-match">
+                    <span class="card-label">POP THE<br>BUBBLES</span>
+                </a>
+                <a href="sentence.html" class="game-card card-orange" id="btn-puzzle-quest">
+                    <span class="card-label">BUILD A<br>SENTENCE</span>
+                </a>
+                <a href="brain.html" class="game-card card-green" id="btn-quiz-master">
+                    <span class="card-label">CONNECT<br>BRAINY</span>
+                </a>
             </div>
-
-            <p class="home-tagline">Choose a game to start learning! 🚀</p>
         </div>
     </section>
+
+    <script>
+        // Interactive button effects
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'scale(1.08) rotate(-2deg)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+            });
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.95)';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1.08) rotate(-2deg)';
+            });
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.95)';
+            }, { passive: true });
+            card.addEventListener('touchend', () => {
+                card.style.transform = '';
+            });
+        });
+
+        // Title letter hover effect
+        document.querySelectorAll('.title-letter').forEach(letter => {
+            letter.addEventListener('mouseenter', () => {
+                letter.style.transform = 'scale(1.35)';
+            });
+            letter.addEventListener('mouseleave', () => {
+                letter.style.transform = '';
+            });
+        });
+
+        // Wave animation on page load — each letter pops up sequentially
+        function playTitleWave() {
+            const letters = document.querySelectorAll('.title-letter');
+            letters.forEach((letter, i) => {
+                setTimeout(() => {
+                    letter.classList.add('wave-pop');
+                    setTimeout(() => letter.classList.remove('wave-pop'), 350);
+                }, i * 120);
+            });
+        }
+        // Run after a short delay so the fade-in finishes first
+        setTimeout(playTitleWave, 600);
+    </script>
 
 </body>
 
